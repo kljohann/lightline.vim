@@ -16,10 +16,9 @@ function! lightline#update() abort
   if !s:lightline.enable.statusline | return | endif
   let w = winnr()
   let s = winnr('$') == 1 ? [lightline#statusline(0)] : [lightline#statusline(0), lightline#statusline(1)]
-  for n in range(1, winnr('$'))
-    call setwinvar(n, '&statusline', s[n!=w])
-    call setwinvar(n, 'lightline', n!=w)
-  endfor
+
+  windo let w:lightline=winnr()!=w | let &l:statusline=s[w:lightline]
+  exe w . "wincmd w"
 endfunction
 
 function! lightline#update_once() abort
@@ -28,7 +27,7 @@ endfunction
 
 function! lightline#update_disable() abort
   if !s:lightline.enable.statusline | return | endif
-  call setwinvar(0, '&statusline', '')
+  windo let &l:statusline=
 endfunction
 
 function! lightline#enable() abort
